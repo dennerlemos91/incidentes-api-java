@@ -1,39 +1,72 @@
 package br.com.incidentes.services;
 
+import br.com.incidentes.domain.Zabbix;
+import br.com.incidentes.domain.enums.IndexZabbix;
+import br.com.incidentes.repository.ZabbixRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
 public class ZabbixService {
 
-    public void importar(List<MultipartFile> file) {
-        String arquivo = "C:\\Users\\Raphael\\Desktop\\arquivo.csv";
-        String linha = "";
-        String separador = ";";
-        BufferedReader conteudoArquivo = null;
+    private ZabbixRepository zabbixRepository;
 
-        try {
-            conteudoArquivo = new BufferedReader(new FileReader(arquivo));
-            while ((linha = conteudoArquivo.readLine())!=null){
-                String[] dados = linha.split(arquivo);
+    @Transactional
+    public void importar(MultipartFile arquivo) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(arquivo.getInputStream()));
+        List<Zabbix> itensZabbixes = br.lines().skip(1)
+                .map(this::mapToItem)
+                .collect(Collectors.toList());
+        zabbixRepository.saveAll(itensZabbixes);
+    }
 
-                //mostrar o conteúdo do array
+
+
+    private Zabbix mapToItem(String line) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        List<String> itenslinha = Arrays.stream(
+                line.replace("\"", "")
+                        .split(","))
+                .collect(Collectors.toList());
+
+        Zabbix.ZabbixBuilder builder = Zabbix.builder();
+        for (int index = 0; index < itenslinha.size(); index++) {
+            String valor = itenslinha.get(index);
+            if (index == IndexZabbix.SEVERIDADE.getCodigo()) {
+                builder.severidade(valor);
+            } else if( index == IndexZabbix.HORA.getCodigo()) {
+                builder.hora(LocalDateTime.parse(valor, formatter));
+            } else if(index == IndexZabbix.TEMPO_RECUPERACAO.getCodigo()) {
+                builder.tempoRecuperacao(LocalDateTime.parse(valor, formatter));
+            } else if(index == IndexZabbix.STATUS.getCodigo()) {
+                builder.status(valor);
+            } else if(index == IndexZabbix.HOST.getCodigo()) {
+                builder.host(valor);
+            } else if(index == IndexZabbix.INCIDENTE.getCodigo()) {
+                builder.incidente(valor);
+            } else if(index == IndexZabbix.DURACAO.getCodigo()) {
+                builder.duracao(valor);
+            } else if(index == IndexZabbix.RECONHECIDO.getCodigo()) {
+                builder.reconhecimento(valor);
+            } else if(index == IndexZabbix.ACAO.getCodigo()) {
+                builder.acoes(valor);
+            } else {
+                builder.etiquetas(valor);
             }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
-
+        return builder.build();
     }
 }

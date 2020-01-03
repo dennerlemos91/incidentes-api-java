@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -25,10 +26,10 @@ public class Zabbix implements Serializable {
     private String severidade;
 
     @Column(name = "hora")
-    private String hora;
+    private LocalDateTime hora;
 
     @Column(name = "tempoRecuperacao")
-    private String tempoRecuperacao;
+    private LocalDateTime tempoRecuperacao;
 
     @Column(name = "status")
     private String status;
