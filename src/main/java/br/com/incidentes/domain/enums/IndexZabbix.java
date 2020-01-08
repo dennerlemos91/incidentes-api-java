@@ -16,6 +16,6 @@ public enum IndexZabbix {
     RECONHECIDO(7),
     ACAO(8),
     ETIQUETAS(9);
-//
+
     private final Integer codigo;
 }

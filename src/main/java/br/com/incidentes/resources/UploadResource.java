@@ -1,5 +1,6 @@
 package br.com.incidentes.resources;
 
+import br.com.incidentes.services.OtrsService;
 import br.com.incidentes.services.ZabbixService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,11 @@ import java.io.IOException;
 public class UploadResource {
 
     private ZabbixService zabbixService;
+    private OtrsService otrsService;
 
     @PostMapping("/otrs")
-    public void uploadOtrs(@RequestParam MultipartFile arquivo) {
-        //TODO: Processesar arquivo otrs
+    public void uploadOtrs(@RequestParam MultipartFile arquivo) throws IOException {
+        otrsService.importar(arquivo);
     }
 
     @PostMapping("/zabbix")
