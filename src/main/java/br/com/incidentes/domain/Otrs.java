@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -28,14 +30,17 @@ public class Otrs implements Serializable {
     @Column(name = "idade")
     private String idade;
 
-    @Column(name = "criadoDT")
-    private String criadoDT;
+    @Column(name = "criacao_data")
+    private LocalDate criadoDT;
 
-    @Column(name = "criadoHR")
-    private String criadoHR;
+    @Column(name = "criacao_hora")
+    private LocalTime criadoHR;
 
-    @Column(name = "fechado")
-    private String fechado;
+    @Column(name = "fechado_data")
+    private LocalDate fechadoDT;
+
+    @Column(name = "fechado_hora")
+    private LocalTime fechadoHR;
 
     @Column(name = "primeiroBloqueio")
     private String primeiroBloqueio;

@@ -34,7 +34,7 @@ public class OtrsService {
     }
 
     private Otrs mapToItem(String line) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         List<String> itenslinha = Arrays.stream(
                 line.replace("\"", "")
                         .split(";"))
@@ -47,12 +47,14 @@ public class OtrsService {
                 builder.numero(valor);
             } else if( index == IndexOtrs.IDADE.getCodigo()) {
                 builder.idade(valor);
-            }else if( index == IndexOtrs.CRIADODT.getCodigo()) {
-                builder.criadoDT(valor.substring(0, 10));
-            }else if( index == IndexOtrs.CRIADOHR.getCodigo()) {
-                builder.criadoHR(valor.substring(11, 15));
+            } else if( index == IndexOtrs.DATA_CRIACAO.getCodigo()) {
+                LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
+                builder.criadoDT(dateTime.toLocalDate());
+                builder.criadoHR(dateTime.toLocalTime());
             }else if( index == IndexOtrs.FECHADO.getCodigo()) {
-                builder.fechado(valor);
+                LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
+                builder.fechadoDT(dateTime.toLocalDate());
+                builder.fechadoHR(dateTime.toLocalTime());
             }else if( index == IndexOtrs.PRIMEIRO_BLOQUEIO.getCodigo()) {
                 builder.primeiroBloqueio(valor);
             }else if( index == IndexOtrs.PRIMEIRA_RESPOSTA.getCodigo()) {
