@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -39,60 +41,40 @@ public class OtrsService {
                 line.replace("\"", "")
                         .split(";"))
                 .collect(Collectors.toList());
-
-        Otrs.OtrsBuilder builder = Otrs.builder();
-        for (int index = 0; index < itenslinha.size(); index++) {
-            String valor = itenslinha.get(index);
-            if (index == IndexOtrs.NUMERO.getCodigo()) {
-                builder.numero(valor);
-            } else if( index == IndexOtrs.IDADE.getCodigo()) {
-                builder.idade(valor);
-            } else if( index == IndexOtrs.DATA_CRIACAO.getCodigo()) {
-                LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
-                builder.criadoDT(dateTime.toLocalDate());
-                builder.criadoHR(dateTime.toLocalTime());
-            }else if( index == IndexOtrs.FECHADO.getCodigo()) {
-                LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
-                builder.fechadoDT(dateTime.toLocalDate());
-                builder.fechadoHR(dateTime.toLocalTime());
-            }else if( index == IndexOtrs.PRIMEIRO_BLOQUEIO.getCodigo()) {
-                builder.primeiroBloqueio(valor);
-            }else if( index == IndexOtrs.PRIMEIRA_RESPOSTA.getCodigo()) {
-                builder.primeiraResposta(valor);
-            }else if( index == IndexOtrs.ESTADO.getCodigo()) {
-                builder.estado(valor);
-            }else if( index == IndexOtrs.PRIORIDADE.getCodigo()) {
-                builder.prioridade(valor);
-            }else if( index == IndexOtrs.FILA.getCodigo()) {
-                builder.fila(valor);
-            }else if( index == IndexOtrs.BLOQUEAR.getCodigo()) {
-                builder.bloquear(valor);
-            }else if( index == IndexOtrs.PROPRIETARIO.getCodigo()) {
-                builder.proprietario(valor);
-            }else if( index == IndexOtrs.PRIMEIRO_NOME.getCodigo()) {
-                builder.primeiroNome(valor);
-            }else if( index == IndexOtrs.ULTIMO_NOME.getCodigo()) {
-                builder.ultimoNome(valor);
-            }else if( index == IndexOtrs.ID_DO_CLIENTE.getCodigo()) {
-                builder.idDoCliente(valor);
-            }else if( index == IndexOtrs.NOME_DO_CLIENTE.getCodigo()) {
-                builder.nomeDoCliente(valor);
-            }else if( index == IndexOtrs.DE.getCodigo()) {
-                builder.de(valor);
-            }else if( index == IndexOtrs.ASSUNTO.getCodigo()) {
-                builder.assunto(valor);
-            }else if( index == IndexOtrs.TEMPO_CONTABILIZADO.getCodigo()) {
-                builder.tempoContabilizado(valor);
-            }else if( index == IndexOtrs.ARVORE_DO_ARTIGO.getCodigo()) {
-                builder.arvoreDoArtigo(valor);
-            }else if( index == IndexOtrs.TS_MINUTOS.getCodigo()) {
-                builder.TSminutos(valor);
-            }else if( index == IndexOtrs.PR_MINUTOS.getCodigo()) {
-                builder.PRminutos(valor);
-            }else {
-                builder.DTPRminutos(valor);
-            }
-        }
-        return builder.build();
+        return Otrs.builder()
+                .numero(itenslinha.get(IndexOtrs.NUMERO.getCodigo()))
+                .idade(itenslinha.get(IndexOtrs.IDADE.getCodigo()))
+                .criadoDT(obterData(itenslinha.get(IndexOtrs.DATA_CRIACAO.getCodigo()), formatter))
+                .criadoHR(obterHora(itenslinha.get(IndexOtrs.DATA_CRIACAO.getCodigo()), formatter))
+                .fechadoDT(obterData(itenslinha.get(IndexOtrs.FECHADO.getCodigo()), formatter))
+                .fechadoHR(obterHora(itenslinha.get(IndexOtrs.FECHADO.getCodigo()), formatter))
+                .primeiroBloqueio(itenslinha.get(IndexOtrs.PRIMEIRO_BLOQUEIO.getCodigo()))
+                .primeiraResposta(itenslinha.get(IndexOtrs.PRIMEIRA_RESPOSTA.getCodigo()))
+                .estado(itenslinha.get(IndexOtrs.ESTADO.getCodigo()))
+                .prioridade(itenslinha.get(IndexOtrs.PRIORIDADE.getCodigo()))
+                .fila(itenslinha.get(IndexOtrs.FILA.getCodigo()))
+                .bloquear(itenslinha.get(IndexOtrs.BLOQUEAR.getCodigo()))
+                .proprietario(itenslinha.get(IndexOtrs.PROPRIETARIO.getCodigo()))
+                .primeiroNome(itenslinha.get(IndexOtrs.PRIMEIRO_NOME.getCodigo()))
+                .ultimoNome(itenslinha.get(IndexOtrs.ULTIMO_NOME.getCodigo()))
+                .nomeDoCliente(itenslinha.get(IndexOtrs.NOME_DO_CLIENTE.getCodigo()))
+                .de(itenslinha.get(IndexOtrs.DE.getCodigo()))
+                .assunto(itenslinha.get(IndexOtrs.ASSUNTO.getCodigo()))
+                .tempoContabilizado(itenslinha.get(IndexOtrs.TEMPO_CONTABILIZADO.getCodigo()))
+                .arvoreDoArtigo(itenslinha.get(IndexOtrs.ARVORE_DO_ARTIGO.getCodigo()))
+                .TSminutos(itenslinha.get(IndexOtrs.TS_MINUTOS.getCodigo()))
+                .PRminutos(itenslinha.get(IndexOtrs.PR_MINUTOS.getCodigo()))
+                .DTPRminutos(itenslinha.get(IndexOtrs.DTPR_MINUTOS.getCodigo()))
+                .build();
     }
+
+    private LocalDate obterData(String data, DateTimeFormatter formatter) {
+        return LocalDateTime.parse(data, formatter).toLocalDate();
+    }
+
+    private LocalTime obterHora(String data, DateTimeFormatter formatter) {
+        return LocalDateTime.parse(data, formatter).toLocalTime();
+    }
+
+
 }
