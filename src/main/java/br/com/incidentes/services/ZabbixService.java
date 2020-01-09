@@ -48,9 +48,13 @@ public class ZabbixService {
             if (index == IndexZabbix.SEVERIDADE.getCodigo()) {
                 builder.severidade(valor);
             } else if( index == IndexZabbix.HORA.getCodigo()) {
-                builder.hora(LocalDateTime.parse(valor, formatter));
+                LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
+                builder.horaDT(dateTime.toLocalDate());
+                builder.horaHR(dateTime.toLocalTime());
             } else if(index == IndexZabbix.TEMPO_RECUPERACAO.getCodigo()) {
-                builder.tempoRecuperacao(LocalDateTime.parse(valor, formatter));
+                LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
+                builder.tempoRecuperacaoDT(dateTime.toLocalDate());
+                builder.tempoRecuperacaoHR(dateTime.toLocalTime());
             } else if(index == IndexZabbix.STATUS.getCodigo()) {
                 builder.status(valor);
             } else if(index == IndexZabbix.HOST.getCodigo()) {
