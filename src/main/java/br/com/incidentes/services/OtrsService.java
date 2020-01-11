@@ -77,4 +77,7 @@ public class OtrsService {
     }
 
 
+    public List<Otrs> obterRegistrosOtrsPorDatas(LocalDate dataInicio, LocalDate dataFim) {
+        return otrsRepository.getAllBetweenDates(dataInicio, dataFim);
+    }
 }

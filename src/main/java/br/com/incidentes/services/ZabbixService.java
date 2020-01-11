@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -49,8 +50,8 @@ public class ZabbixService {
                 builder.severidade(valor);
             } else if( index == IndexZabbix.HORA.getCodigo()) {
                 LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
-                builder.horaDT(dateTime.toLocalDate());
-                builder.horaHR(dateTime.toLocalTime());
+                builder.dtCriacao(dateTime.toLocalDate());
+                builder.hrCriacao(dateTime.toLocalTime());
             } else if(index == IndexZabbix.TEMPO_RECUPERACAO.getCodigo()) {
                 LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
                 builder.tempoRecuperacaoDT(dateTime.toLocalDate());
@@ -72,5 +73,9 @@ public class ZabbixService {
             }
         }
         return builder.build();
+    }
+
+    public List<Zabbix> obterRegistrosZabbixPorDatas(LocalDate dataInicio, LocalDate dataFim) {
+        return zabbixRepository.getAllBetweenDates(dataInicio, dataFim);
     }
 }

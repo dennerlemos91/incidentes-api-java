@@ -27,11 +27,11 @@ public class Zabbix implements Serializable {
     @Column(name = "severidade")
     private String severidade;
 
-    @Column(name = "hora_data")
-    private LocalDate horaDT;
+    @Column(name = "data_criacao")
+    private LocalDate dtCriacao;
 
-    @Column(name = "hora_hora")
-    private LocalTime horaHR;
+    @Column(name = "hora_criacao")
+    private LocalTime hrCriacao;
 
     @Column(name = "tempoRecuperacao_data")
     private LocalDate tempoRecuperacaoDT;
