@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -43,36 +44,29 @@ public class ZabbixService {
                         .split(","))
                 .collect(Collectors.toList());
 
-        Zabbix.ZabbixBuilder builder = Zabbix.builder();
-        for (int index = 0; index < itenslinha.size(); index++) {
-            String valor = itenslinha.get(index);
-            if (index == IndexZabbix.SEVERIDADE.getCodigo()) {
-                builder.severidade(valor);
-            } else if( index == IndexZabbix.HORA.getCodigo()) {
-                LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
-                builder.dtCriacao(dateTime.toLocalDate());
-                builder.hrCriacao(dateTime.toLocalTime());
-            } else if(index == IndexZabbix.TEMPO_RECUPERACAO.getCodigo()) {
-                LocalDateTime dateTime = LocalDateTime.parse(valor, formatter);
-                builder.tempoRecuperacaoDT(dateTime.toLocalDate());
-                builder.tempoRecuperacaoHR(dateTime.toLocalTime());
-            } else if(index == IndexZabbix.STATUS.getCodigo()) {
-                builder.status(valor);
-            } else if(index == IndexZabbix.HOST.getCodigo()) {
-                builder.host(valor);
-            } else if(index == IndexZabbix.INCIDENTE.getCodigo()) {
-                builder.incidente(valor);
-            } else if(index == IndexZabbix.DURACAO.getCodigo()) {
-                builder.duracao(valor);
-            } else if(index == IndexZabbix.RECONHECIDO.getCodigo()) {
-                builder.reconhecimento(valor);
-            } else if(index == IndexZabbix.ACAO.getCodigo()) {
-                builder.acoes(valor);
-            } else {
-                builder.etiquetas(valor);
-            }
-        }
-        return builder.build();
+        return Zabbix.builder()
+                .severidade(itenslinha.get(IndexZabbix.SEVERIDADE.getCodigo()))
+                .dtCriacao(obterData(itenslinha.get(IndexZabbix.HORA.getCodigo()), formatter))
+                .hrCriacao(obterHora(itenslinha.get(IndexZabbix.HORA.getCodigo()), formatter))
+                .tempoRecuperacaoDT(obterData(itenslinha.get(IndexZabbix.TEMPO_RECUPERACAO.getCodigo()), formatter))
+                .tempoRecuperacaoHR(obterHora(itenslinha.get(IndexZabbix.TEMPO_RECUPERACAO.getCodigo()), formatter))
+                .status(itenslinha.get(IndexZabbix.STATUS.getCodigo()))
+                .host(itenslinha.get(IndexZabbix.HOST.getCodigo()))
+                .incidente(itenslinha.get(IndexZabbix.INCIDENTE.getCodigo()))
+                .duracao(itenslinha.get(IndexZabbix.DURACAO.getCodigo()))
+                .reconhecimento(itenslinha.get(IndexZabbix.RECONHECIDO.getCodigo()))
+                .acoes(itenslinha.get(IndexZabbix.ACAO.getCodigo()))
+                .etiquetas(itenslinha.get(IndexZabbix.ETIQUETAS.getCodigo()))
+                .build();
+
+    }
+
+    private LocalDate obterData(String data, DateTimeFormatter formatter) {
+        return LocalDateTime.parse(data, formatter).toLocalDate();
+    }
+
+    private LocalTime obterHora(String data, DateTimeFormatter formatter) {
+        return LocalDateTime.parse(data, formatter).toLocalTime();
     }
 
     public List<Zabbix> obterRegistrosZabbixPorDatas(LocalDate dataInicio, LocalDate dataFim) {
